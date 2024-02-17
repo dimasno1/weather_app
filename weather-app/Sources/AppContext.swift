@@ -19,5 +19,5 @@ final class AppContext {
 
 enum Constant {
     static let accuWeatherEndpointString = "https://dataservice.accuweather.com"
-    static let apiKey = "HUCVThZaMdZ69hiK5k6pKBmELB8g6wDN"
+    static let apiKey = "3vSmcixB4lboKeVZfEN3XYMUDfuzQZwz"
 }
