@@ -5,7 +5,9 @@
 import UIKit
 
 enum ApplicationModule {
-    static func create() -> UIViewController {
-        return ViewController()
+    static func create(
+        context: AppContext
+    ) -> UIViewController {
+        return .init()
     }
 }

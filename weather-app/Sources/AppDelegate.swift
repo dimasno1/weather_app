@@ -8,6 +8,8 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
+    let appContext = AppContext()
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -15,12 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
 
-        let controller = ApplicationModule.create()
-
+        let controller = SearchCityModule.create(
+            context: appContext
+        )
         window.rootViewController = controller
         window.makeKeyAndVisible()
 
         return true
     }
 }
-
