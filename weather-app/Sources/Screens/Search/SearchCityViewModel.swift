@@ -137,7 +137,7 @@ extension SearchCityViewModel: SearchCityViewModelType {
     }
     
     var title: AnyPublisher<String, Never> {
-        Just("Search for city").eraseToAnyPublisher()
+        Just("Pogoda").eraseToAnyPublisher()
     }
     
     var searchController: AnyPublisher<UISearchController, Never> {
@@ -185,8 +185,9 @@ extension WeatherConditions {
 }
 
 private struct TextInputValidator {
+    private let pattern = "^[a-zA-Zа-яА-ЯżółćęśąźńŻÓŁĆĘŚĄŹŃ]+$"
+
     func validate(_ input: String) -> Bool {
-        let pattern = "^[a-zA-Zа-яА-ЯżółćęśąźńŻÓŁĆĘŚĄŹŃ]+$"
         let isAllowedCharacter = input.range(
             of: pattern,
             options: .regularExpression

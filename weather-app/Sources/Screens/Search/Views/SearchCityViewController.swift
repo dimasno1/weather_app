@@ -64,8 +64,34 @@ final class SearchCityViewController: UIViewController {
 
         setupSubviews()
         bindViewModel()
+        observeKeyboardAppearance()
 
         viewModel.viewDidLoad()
+    }
+
+    private func observeKeyboardAppearance() {
+        NotificationCenter.default.publisher(
+            for: UIResponder.keyboardWillShowNotification
+        ).sink { [weak self] notification in
+            self?.updateUIForKeyboardAppearance(using: notification)
+        }.store(in: &cancellables)
+
+        NotificationCenter.default.publisher(
+            for: UIResponder.keyboardDidHideNotification
+        ).sink { [weak self] notification in
+            self?.collectionView.contentInset.bottom = 0
+        }.store(in: &cancellables)
+    }
+
+    private func updateUIForKeyboardAppearance(using notification: Notification) {
+        guard
+            let userInfo = notification.userInfo,
+            let keyboardSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)
+        else {
+            return
+        }
+        let keyboardHeight = keyboardSize.cgRectValue.height
+        collectionView.contentInset.bottom = keyboardHeight + 10
     }
 
     private func createCell(
@@ -93,12 +119,13 @@ private extension SearchCityViewController {
             make.top.equalTo(view.safeAreaLayoutGuide)
         }
 
-        collectionView.delegate = self
-        collectionView.backgroundColor = .white
         collectionView.register(
             CityWeatherCell.self,
             forCellWithReuseIdentifier: CityWeatherCell.reuseID
         )
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.backgroundColor = .white
     }
 
     func bindViewModel() {
