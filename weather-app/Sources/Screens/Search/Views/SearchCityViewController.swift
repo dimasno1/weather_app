@@ -21,6 +21,7 @@ protocol SearchCityViewModelType {
     func viewDidLoad()
 
     func setDataSource(_ dataSource: DataSource)
+    func validateInput(_ input: String) -> Bool
 }
 
 extension SearchCityViewController {
@@ -135,6 +136,15 @@ extension SearchCityViewController: UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         viewModel.didTapCancel()
+    }
+
+    func searchBar(
+        _ searchBar: UISearchBar,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String
+    ) -> Bool {
+        let shouldReplace = viewModel.validateInput(text)
+        return shouldReplace
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

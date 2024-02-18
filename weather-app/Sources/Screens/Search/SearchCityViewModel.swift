@@ -20,6 +20,7 @@ final class SearchCityViewModel {
 
     private weak var _dataSource: DataSource!
 
+    private let textValidator = TextInputValidator()
     private let dateFormatter = DateFormatter()
     private let client: HTTPClient
     private let database: Database
@@ -160,6 +161,10 @@ extension SearchCityViewModel: SearchCityViewModelType {
         searchResultsViewModel.showResults(for: text)
     }
 
+    func validateInput(_ input: String) -> Bool {
+        return textValidator.validate(input)
+    }
+
     func viewDidLoad() {
         observeDBUpdates()
         refreshWeather()
@@ -177,4 +182,16 @@ extension WeatherConditions {
             imperial: .init(value: 0, unit: "")
         )
     )
+}
+
+private struct TextInputValidator {
+    func validate(_ input: String) -> Bool {
+        let pattern = "^[a-zA-Zа-яА-ЯżółćęśąźńŻÓŁĆĘŚĄŹŃ]+$"
+        let isAllowedCharacter = input.range(
+            of: pattern,
+            options: .regularExpression
+        ) != nil
+
+        return isAllowedCharacter
+    }
 }
