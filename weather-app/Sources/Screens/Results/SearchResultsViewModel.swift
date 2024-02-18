@@ -28,8 +28,8 @@ final class SearchResultsViewModel {
             switch result {
             case let .success(cities):
                 self?.updateSearch(with: cities, searchWord: searchWord)
-            case .failure:
-                print("")
+            case let .failure(error):
+                print(error.localizedDescription)
             }
         }
     }

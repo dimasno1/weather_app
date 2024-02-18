@@ -10,9 +10,14 @@ enum WeatherDetailsModule {
         context: AppContext
     ) -> UIViewController {
         let viewController = WeatherDetailsViewController()
+        let router = WeatherDetailsRouter(
+            rootViewController: viewController
+        )
         let viewModel = WeatherDetailsViewModel(
             city: city,
-            httpClient: context.httpClient
+            httpClient: context.httpClient,
+            database: context.database,
+            router: router
         )
         viewController.viewModel = viewModel
         return viewController
