@@ -15,7 +15,8 @@ enum SearchCityModule {
             context: context
         )
         let viewModel = SearchCityViewModel(
-            client: context.httpClient,
+            client: context.httpClient, 
+            database: context.database,
             router: router
         )
         controller.viewModel = viewModel

@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
+        window.overrideUserInterfaceStyle = .light
         self.window = window
 
         let controller = SearchCityModule.create(

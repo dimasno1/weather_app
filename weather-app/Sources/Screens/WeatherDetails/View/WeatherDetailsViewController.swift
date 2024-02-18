@@ -14,7 +14,8 @@ protocol WeatherDetailsViewModelType {
     var backgroundColor: AnyPublisher<UIColor, Never> { get }
     var icon: AnyPublisher<UIImage?, Never> { get }
 
-    var actionsHidden: AnyPublisher<Bool, Never> { get }
+    var addHidden: AnyPublisher<Bool, Never> { get }
+    var cancelHidden: AnyPublisher<Bool, Never> { get }
 
     func didTapAdd()
     func didTapCancel()
@@ -27,12 +28,16 @@ final class WeatherDetailsViewController: UIViewController {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    private let dayNightBackgroundView = UIView()
     private let nameLabel = UILabel()
     private let temperatureLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let rangeLabel = UILabel()
+
     private let iconImageView = UIImageView()
+    private let dayNightBackgroundView = UIView()
+
+    private let addButton = UIButton()
+    private let cancelButton = UIButton()
 
     private lazy var labelsStack = {
         let stack = UIStackView(
@@ -56,6 +61,16 @@ final class WeatherDetailsViewController: UIViewController {
         bindViewModel()
 
         viewModel.viewDidLoad()
+    }
+
+    @objc
+    private func didTapAdd() {
+        viewModel.didTapAdd()
+    }
+
+    @objc
+    private func didTapCancel() {
+        viewModel.didTapCancel()
     }
 }
 
@@ -94,6 +109,14 @@ private extension WeatherDetailsViewController {
             .map { $0 }
             .assign(to: \.backgroundColor, on: dayNightBackgroundView)
             .store(in: &cancellables)
+
+        viewModel.addHidden
+            .assign(to: \.isHidden, on: addButton)
+            .store(in: &cancellables)
+
+        viewModel.cancelHidden
+            .assign(to: \.isHidden, on: cancelButton)
+            .store(in: &cancellables)
     }
 
     func setupSubviews() {
@@ -102,12 +125,30 @@ private extension WeatherDetailsViewController {
 
         nameLabel.font = .boldSystemFont(ofSize: 30)
         nameLabel.textColor = .white
+
         temperatureLabel.font = .systemFont(ofSize: 65)
         temperatureLabel .textColor = .white
+
         descriptionLabel.font = .systemFont(ofSize: 16)
         descriptionLabel .textColor = .white
+
         rangeLabel.font = .systemFont(ofSize: 16)
         rangeLabel.textColor = .white
+
+        addButton.setTitle("Add", for: .normal)
+        addButton.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
+
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
+
+        addButton.layout(in: view) { make in
+            make.top.equalTo(10)
+            make.left.equalToSuperview().inset(24)
+        }
+        cancelButton.layout(in: view) { make in
+            make.top.equalTo(10)
+            make.right.equalToSuperview().inset(24)
+        }
 
         iconImageView.contentMode = .scaleAspectFit
         iconImageView.layout(in: view) { make in

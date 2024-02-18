@@ -8,21 +8,24 @@ import SnapKit
 
 protocol SearchCityViewModelType {
     typealias DataSource = SearchCityViewController.DataSource
+    typealias Model = SearchCityViewController.Model
 
     var title: AnyPublisher<String, Never> { get }
     var searchController: AnyPublisher<UISearchController, Never> { get }
 
     func didTapCancel()
     func didTapSearch()
+    func didTapOnSavedCity(at index: Int)
     func didUpdateText(with text: String)
 
     func viewDidLoad()
+
     func setDataSource(_ dataSource: DataSource)
 }
 
 extension SearchCityViewController {
     struct Model: Hashable {
-        let id: UUID
+        let id: String
         let color: UIColor
         let title: String
         let subtitle: String
@@ -88,6 +91,9 @@ private extension SearchCityViewController {
             make.horizontalEdges.equalToSuperview().inset(16.0)
             make.top.equalTo(view.safeAreaLayoutGuide)
         }
+
+        collectionView.delegate = self
+        collectionView.backgroundColor = .white
         collectionView.register(
             CityWeatherCell.self,
             forCellWithReuseIdentifier: CityWeatherCell.reuseID
@@ -104,10 +110,20 @@ private extension SearchCityViewController {
 
         viewModel.searchController.sink { [weak self] controller in
             self?.navigationItem.searchController = controller
+            self?.setNeedsStatusBarAppearanceUpdate()
             controller.searchBar.delegate = self
         }.store(in: &cancellables)
 
         viewModel.setDataSource(dataSource)
+    }
+}
+
+extension SearchCityViewController: UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        viewModel.didTapOnSavedCity(at: indexPath.row)
     }
 }
 
